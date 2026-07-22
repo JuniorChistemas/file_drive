@@ -1,0 +1,32 @@
+# Control de versiones
+
+.git/
+.gitignore
+
+.env
+credentials/
+
+# Logs y almacenamiento temporal (bind mounts)
+
+logs/
+app/storage/
+
+# Docker
+
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Python
+
+**pycache**/
+_.pyc
+_.pyo
+\*.egg-info/
+.venv/
+venv/
+
+# Tests y docs
+
+tests/
+README.md

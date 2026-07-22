@@ -1,0 +1,11 @@
+services:
+  document-worker:
+    build: .
+    container_name: document-worker
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./logs:/app/logs
+      - ./credentials:/app/credentials
+      - ./app/storage:/app/app/storage
