@@ -117,6 +117,43 @@ def test_resolve_path_segmento_inexistente():
     assert folders.resolve_path(service, "MZ_A/NO_EXISTE") is None
 
 
+def test_find_lote_folder_ok():
+    service = FakeService([
+        _folder("1", "Escaneos"),
+        _folder("2", "MZ_A", parents=["1"]),
+        _folder("3", "7343546_A2-12", parents=["2"]),  # lote correcto
+    ])
+    found = folders.find_lote_folder(service, "1", "MZ_A", "7343546_A2-12")
+    assert found is not None and found["id"] == "3"
+
+
+def test_find_lote_folder_manzana_inexistente():
+    service = FakeService([
+        _folder("1", "Escaneos"),
+        _folder("2", "MZ_A", parents=["1"]),
+    ])
+    assert folders.find_lote_folder(service, "1", "MZ_Z", "7343546_A2-12") is None
+
+
+def test_find_lote_folder_lote_inexistente():
+    service = FakeService([
+        _folder("1", "Escaneos"),
+        _folder("2", "MZ_A", parents=["1"]),
+        _folder("3", "OTRO", parents=["2"]),
+    ])
+    assert folders.find_lote_folder(service, "1", "MZ_A", "7343546_A2-12") is None
+
+
+def test_find_lote_folder_ignora_lote_en_otra_manzana():
+    service = FakeService([
+        _folder("1", "Escaneos"),
+        _folder("2", "MZ_A", parents=["1"]),
+        _folder("3", "MZ_B", parents=["1"]),
+        _folder("4", "7343546_A2-12", parents=["3"]),  # bajo MZ_B, no MZ_A
+    ])
+    assert folders.find_lote_folder(service, "1", "MZ_A", "7343546_A2-12") is None
+
+
 def test_iter_subfolders_solo_carpetas():
     service = FakeService([
         _folder("2", "SUB_A", parents=["1"]),

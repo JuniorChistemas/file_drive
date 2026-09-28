@@ -49,7 +49,7 @@ def find_child_folder(service: Any, name: str, parent_id: str | None = None) -> 
 
 
 def resolve_path(service: Any, path: str) -> dict | None:
-    """Resuelve una ruta tipo 'MZ_A/0232433_A0-03' segmento a segmento.
+    """Resuelve una ruta tipo 'Escaneos/Manzana G/7343546_A2-12' segmento a segmento.
     Devuelve el dict de la carpeta final o None si algún segmento no existe.
     """
     current = None
@@ -59,6 +59,23 @@ def resolve_path(service: Any, path: str) -> dict | None:
         if current is None:
             return None
     return current
+
+
+def find_lote_folder(service: Any, root_id: str, manzana: str, dni_lote: str) -> dict | None:
+    """Resuelve la carpeta del cliente bajo la jerarquía fija
+    Escaneos/(manzana)/(DNI_LOTE).
+
+    - root_id: id de la carpeta raíz 'Escaneos' (settings.drive_root_folder).
+    - manzana: nombre de la manzana, ej. 'MZ_A' (settings.drive_manzana_folder).
+    - dni_lote: nombre de la carpeta del cliente, ej. '7343546_A2-12'.
+
+    Devuelve el dict de la carpeta DNI_LOTE o None si la manzana o el lote
+    no existen.
+    """
+    manzana_folder = find_child_folder(service, manzana, root_id)
+    if manzana_folder is None:
+        return None
+    return find_child_folder(service, dni_lote, manzana_folder["id"])
 
 
 def iter_subfolders(service: Any, folder_id: str) -> Iterator[dict]:

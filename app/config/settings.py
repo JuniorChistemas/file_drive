@@ -15,7 +15,8 @@ class Settings(BaseSettings):
 
     # Google Drive API
     google_credentials_path: Path
-    drive_root_folder: str = "CARPETA_PRUEBA"
+    drive_root_folder: str = "CARPETA_PRUEBA"  # 'Escaneos'
+    drive_manzana_folder: str = "SUB_CARPETA"  # subcarpeta de manzana bajo la raíz
 
     # ERP
     erp_api_url: str = ""
