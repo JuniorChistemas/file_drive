@@ -49,7 +49,7 @@ class _FakeDownloader:
         self._fh = fh
         self._payload = request.execute()
 
-    def next_chunk(self):
+    def next_chunk(self, num_retries=0):
         self._fh.write(self._payload)
         return None, True
 

@@ -5,6 +5,7 @@ from typing import Any
 
 from app.config.constants import (
     DRIVE_FILE_FIELDS,
+    DRIVE_NUM_RETRIES,
     DRIVE_PAGE_SIZE,
     MIME_FOLDER,
     MIME_PDF,
@@ -17,7 +18,11 @@ def _escape(value: str) -> str:
 
 
 def _list_all(service: Any, query: str) -> Iterator[dict]:
-    """Itera todos los resultados de una query manejando la paginación."""
+    """Itera todos los resultados de una query manejando la paginación.
+
+    execute(num_retries=...) reintenta con backoff los errores transitorios
+    de Drive (500/502/503/429); los 4xx se lanzan sin reintentar.
+    """
     page_token = None
     while True:
         response = (
@@ -28,7 +33,7 @@ def _list_all(service: Any, query: str) -> Iterator[dict]:
                 fields=DRIVE_FILE_FIELDS,
                 pageToken=page_token,
             )
-            .execute()
+            .execute(num_retries=DRIVE_NUM_RETRIES)
         )
         yield from response.get("files", [])
         page_token = response.get("nextPageToken")

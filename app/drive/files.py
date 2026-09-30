@@ -5,7 +5,7 @@ from typing import Any
 
 from googleapiclient.http import MediaIoBaseDownload
 
-from app.config.constants import MIME_PDF
+from app.config.constants import DRIVE_NUM_RETRIES, MIME_PDF
 
 
 def download_file(service: Any, file: dict, dest_dir: Path) -> Path:
@@ -23,7 +23,8 @@ def download_file(service: Any, file: dict, dest_dir: Path) -> Path:
         downloader = MediaIoBaseDownload(fh, request, chunksize=1024 * 1024)
         done = False
         while not done:
-            _status, done = downloader.next_chunk()
+            # num_retries reintenta con backoff los errores transitorios (5xx, 429)
+            _status, done = downloader.next_chunk(num_retries=DRIVE_NUM_RETRIES)
 
     return dest_path
 

@@ -7,6 +7,8 @@ from pathlib import Path
 # "https://www.googleapis.com/auth/drive"
 DRIVE_SCOPES = ["https://www.googleapis.com/auth/drive.readonly"]
 DRIVE_PAGE_SIZE = 1000
+# Reintentos con backoff para errores transitorios de Drive (5xx, 429)
+DRIVE_NUM_RETRIES = 3
 DRIVE_FILE_FIELDS = "nextPageToken, files(id, name, mimeType, size, modifiedTime, parents)"
 
 # MIME types
@@ -20,6 +22,13 @@ STORAGE_TEMP_DIR = STORAGE_DIR / "temp"
 STORAGE_PROCESSED_DIR = STORAGE_DIR / "processed"
 STORAGE_FAILED_DIR = STORAGE_DIR / "failed"
 STORAGE_DUPLICATED_DIR = STORAGE_DIR / "duplicated"
+
+# ERP
+# El backend procesa cada archivo de forma SÍNCRONA en el POST de subida:
+# la respuesta solo llega cuando termina el procesamiento, por eso la subida
+# usa un timeout mucho más largo que el resto de endpoints.
+ERP_REQUEST_TIMEOUT = 30.0  # s: login, consulta de lote, lot-assignments
+ERP_UPLOAD_TIMEOUT = 300.0  # s (5 min): subida de assignment-documents
 
 # Ghostscript
 GS_BINARY = "gs"

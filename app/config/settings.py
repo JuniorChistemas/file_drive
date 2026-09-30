@@ -21,6 +21,13 @@ class Settings(BaseSettings):
     # ERP
     erp_api_url: str = ""
     erp_api_key: str = ""
+    erp_username: str = ""
+    erp_password: str = ""
+
+    # Pipeline: reanudar desde un lote dado (inclusive); vacío = procesar todos.
+    # Útil para recuperar una corrida interrumpida sin duplicar lot_assignments
+    # de lotes ya subidos al ERP (el ERP no deduplica).
+    pipeline_start_from_lote: str = ""
 
     # Logging
     log_level: str = "INFO"
